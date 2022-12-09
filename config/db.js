@@ -1,7 +1,7 @@
 const dotenv = require('dotenv').config();
 const mongoose = require("mongoose");
 const mongoUrl = process.env.MONGODB_URI;
-function connect(){
+function connection(){
 mongoose
     .connect(mongoUrl,{
         useNewUrlParser: true,
@@ -21,4 +21,4 @@ const galleryCategorySchema = new mongoose.Schema({
 });
 }
 
-module.exports = connect;
+module.exports = connection;

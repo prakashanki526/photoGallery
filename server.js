@@ -1,10 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const connect = require("./config/db");
+const connection = require("./config/db");
+// const admin = require("./routes/admin");
 
 const app = express();
 
-connect();
+connection();
 
 const galleryCategorySchema = new mongoose.Schema({
     name: {type:String, required: true},
@@ -36,11 +37,13 @@ function validate(req,res,next){
     next();
 }
 
+// app.use("/admin",admin);
+
 app.get("/admin",validate,(req,res,next)=>{
     res.send("Hello admin");
 })
 
-app.post("/admin/:category",(req,res) =>{
+app.post("/admin/:category",validate,(req,res,next) =>{
     const categoryName = req.params.category;
     const newCategory = new galleryCatgory({
         name: categoryName,
@@ -48,11 +51,14 @@ app.post("/admin/:category",(req,res) =>{
         updatedAt: new Date()
     });
 
-    newCategory.save();
+    galleryCatgory.findOne({name: categoryName},(err,found)=>{
+        if(found.name!=categoryName){
+            newCategory.save();
+        }
+    })
 });
 
 app.post("/admin",validate,(req,res,next)=>{
-
     const newImage = new image({
         name: req.body.name,
         createdAt: new Date(),
@@ -63,8 +69,6 @@ app.post("/admin",validate,(req,res,next)=>{
     })
     newImage.save();
 });
-
-
 
 const host = process.env.HOST || "localhost";
 const port = process.env.PORT || "3000";
