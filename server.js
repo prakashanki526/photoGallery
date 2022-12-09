@@ -39,7 +39,7 @@ function validate(req,res,next){
 
 // app.use("/admin",admin);
 
-app.get("/admin",validate,(req,res,next)=>{
+app.get("/admin",(req,res)=>{
     res.send("Hello admin");
 })
 
@@ -68,6 +68,10 @@ app.post("/admin",validate,(req,res,next)=>{
         imageLink: req.body.link
     })
     newImage.save();
+});
+
+app.use((req,res) => {
+    res.status(404).send("Page not found!!");
 });
 
 const host = process.env.HOST || "localhost";
