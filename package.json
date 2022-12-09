@@ -1,0 +1,19 @@
+{
+  "name": "photogallery",
+  "version": "1.0.0",
+  "description": "minor assignment 1",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prakashanki526/photoGallery.git"
+  },
+  "author": "ankit prakash",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prakashanki526/photoGallery/issues"
+  },
+  "homepage": "https://github.com/prakashanki526/photoGallery#readme"
+}
