@@ -55,7 +55,8 @@ app.post("/admin/:category",validate,(req,res,next) =>{
         if(found.name!=categoryName){
             newCategory.save();
         }
-    })
+    });
+
 });
 
 app.post("/admin",validate,(req,res,next)=>{
@@ -69,6 +70,23 @@ app.post("/admin",validate,(req,res,next)=>{
     })
     newImage.save();
 });
+
+
+// Discover route
+
+app.get("/discover",(req,res)=>{
+    res.send("Inside discover.");
+});
+
+app.get("/discover/categorylist",(req,res)=>{
+    galleryCatgory.find( {},(err,found)=>{
+        const cats = [];
+        found.forEach((category)=>{
+            cats.push(category.name);
+        })
+        res.send(cats);
+    })
+})
 
 app.use((req,res) => {
     res.status(404).send("Page not found!!");
