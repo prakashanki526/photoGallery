@@ -13,7 +13,7 @@ const galleryCategorySchema = new mongoose.Schema({
 });
 
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended: true}));
 
 const imagesSchema = new mongoose.Schema({
     name: {type:String, required: true},
@@ -48,6 +48,15 @@ app.post("/admin/:category",(req,res) =>{
 
 app.post("/admin",(req,res)=>{
 
+    const newImage = new image({
+        name: req.body.name,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        category: req.body.categories,
+        likes: 0,
+        imageLink: req.body.link
+    })
+    newImage.save();
 })
 
 
