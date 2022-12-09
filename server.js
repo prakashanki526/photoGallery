@@ -18,6 +18,21 @@ mongoose
         console.log("Database not connected successfully " + err);
     });
 
+const galleryCategorySchema = new mongoose.Schema({
+    name: {type:String, required: true},
+    createdAt: Date,
+    updatedAt: Date
+});
+
+const imagesSchema = new mongoose.Schema({
+    name: {type:String, required: true},
+    createdAt: Date,
+    updatedAt: Date,
+    category: [String],
+    likes: Number,
+    imageLink: {type:String, required: true}
+});
+
 
 app.get("/health",(req,res) =>{
     res.send(`Up and running at ${new Date()}`);
