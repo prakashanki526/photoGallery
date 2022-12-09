@@ -27,11 +27,16 @@ const imagesSchema = new mongoose.Schema({
 const galleryCatgory = new mongoose.model("galleryCategory", galleryCategorySchema);
 const image = new mongoose.model("image", imagesSchema);
 
-app.get("/health",(req,res) =>{
+app.get("/health",validate,(req,res,next) =>{
     res.send(`Up and running at ${new Date()}`);
-})
+});
 
-app.get("/admin",(req,res)=>{
+function validate(req,res,next){
+    res.send("Something went wrong! Please try after some time.");
+    next();
+}
+
+app.get("/admin",validate,(req,res,next)=>{
     res.send("Hello admin");
 })
 
@@ -46,7 +51,7 @@ app.post("/admin/:category",(req,res) =>{
     newCategory.save();
 });
 
-app.post("/admin",(req,res)=>{
+app.post("/admin",validate,(req,res,next)=>{
 
     const newImage = new image({
         name: req.body.name,
@@ -57,9 +62,7 @@ app.post("/admin",(req,res)=>{
         imageLink: req.body.link
     })
     newImage.save();
-})
-
-
+});
 
 
 
