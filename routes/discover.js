@@ -36,6 +36,13 @@ route.get("/categorylist",(req,res)=>{
         })
         res.send(cats);
     });
+});
+
+route.get("/getimages",(req,res)=>{
+    const image = new mongoose.model("image", imageSchema);
+    image.find({category:{$all:["nature"]}},(err,found) => {
+        console.log(found.slice(0,4));
+    })
 })
 
 module.exports = route;
