@@ -1,23 +1,48 @@
 const { Router } = require("express");
 const route = Router();
+const mongoose = require("mongoose");
 const connection = require("../config/db");
 
-route.get("/",validate,(req,res,next)=>{
+connection();
+
+const galleryCategorySchema = new mongoose.Schema({
+    name: {type:String, required: true},
+    createdAt: Date,
+    updatedAt: Date
+});
+
+const imageSchema = new mongoose.Schema({
+    name: {type:String, required: true},
+    createdAt: Date,
+    updatedAt: Date,
+    category: [String],
+    likes: Number,
+    imageLink: {type:String, required: true}
+});
+
+const galleryCategory = new mongoose.model("galleryCategory", galleryCategorySchema);
+const image = new mongoose.model("image", imageSchema);
+
+route.get("/",(req,res)=>{
     res.send("Hello admin");
 })
 
-route.post("/:category",(req,res) =>{
-    const categoryName = req.params.category;
-    const newCategory = new galleryCatgory({
+route.post("/category",validate,(req,res,next) =>{
+    const categoryName = req.body.category;
+    const newCategory = new galleryCategory({
         name: categoryName,
         createdAt: new Date(),
         updatedAt: new Date()
     });
 
-    newCategory.save();
+    galleryCategory.findOne({name: categoryName},(err,found)=>{
+        if(!found){
+            newCategory.save();
+        }
+    });
 });
 
-route.post("/",validate,(req,res,next)=>{
+route.post("/image",validate,(req,res,next)=>{
     const newImage = new image({
         name: req.body.name,
         createdAt: new Date(),

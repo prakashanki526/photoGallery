@@ -2,6 +2,7 @@ const dotenv = require('dotenv').config();
 const mongoose = require("mongoose");
 const mongoUrl = process.env.MONGODB_URI;
 function connection(){
+    mongoose.set('strictQuery', false);
 mongoose
     .connect(mongoUrl,{
         useNewUrlParser: true,
@@ -14,11 +15,6 @@ mongoose
         console.log("Database not connected successfully " + err);
     });
 
-const galleryCategorySchema = new mongoose.Schema({
-    name: {type:String, required: true},
-    createdAt: Date,
-    updatedAt: Date
-});
 }
 
 module.exports = connection;
