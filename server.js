@@ -1,5 +1,6 @@
 const express = require("express");
 const admin = require("./routes/admin");
+const discover = require("./routes/discover");
 
 const app = express();
 
@@ -18,22 +19,7 @@ function validate(req,res,next){
 
 app.use("/admin",admin);
 
-
-// Discover route
-
-// app.get("/discover",(req,res)=>{
-//     res.send("Inside discover.");
-// });
-
-// app.get("/discover/categorylist",(req,res)=>{
-//     galleryCategory.find( {},(err,found)=>{
-//         const cats = [];
-//         found.forEach((category)=>{
-//             cats.push(category.name);
-//         })
-//         res.send(cats);
-//     });
-// })
+app.use("/discover",discover);
 
 app.use((req,res) => {
     res.status(404).send("Page not found!!");

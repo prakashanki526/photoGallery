@@ -20,14 +20,12 @@ const imageSchema = new mongoose.Schema({
     imageLink: {type:String, required: true}
 });
 
-const galleryCategory = new mongoose.model("galleryCategory", galleryCategorySchema);
-const image = new mongoose.model("image", imageSchema);
-
 route.get("/",(req,res)=>{
     res.send("Hello admin");
 })
 
 route.post("/category",validate,(req,res,next) =>{
+    const galleryCategory = new mongoose.model("galleryCategory", galleryCategorySchema);
     const categoryName = req.body.category;
     const newCategory = new galleryCategory({
         name: categoryName,
@@ -38,11 +36,13 @@ route.post("/category",validate,(req,res,next) =>{
     galleryCategory.findOne({name: categoryName},(err,found)=>{
         if(!found){
             newCategory.save();
+            console.log("success");
         }
     });
 });
 
 route.post("/image",validate,(req,res,next)=>{
+    const image = new mongoose.model("image", imageSchema);
     const newImage = new image({
         name: req.body.name,
         createdAt: new Date(),
