@@ -4,7 +4,7 @@ const connection = require("../config/db");
 
 const route = Router();
 
-connection();
+// connection();
 
 const galleryCategorySchema = new mongoose.Schema({
     name: {type:String, required: true},

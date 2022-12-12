@@ -1,29 +1,31 @@
 const express = require("express");
 const admin = require("./routes/admin");
 const discover = require("./routes/discover");
+const connection = require("./config/db");
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
+connection();
 
-app.get("/health",validate,(req,res,next) =>{
+
+app.get("/health",(req,res,next) =>{
     res.send(`Up and running at ${new Date()}`);
 });
 
-function validate(req,res,next){
-    res.send("Something went wrong! Please try after some time.");
-    next();
-}
-
 app.use("/admin",admin);
-
 app.use("/discover",discover);
 
-app.use((req,res) => {
+app.use((req,res,next) => {
     res.status(404).send("Page not found!!");
 });
+
+app.use((err,res,req,next) =>{
+    res.status(500).send("Something went wrong");
+});
+
 
 const host = process.env.HOST || "localhost";
 const port = process.env.PORT || "3000";

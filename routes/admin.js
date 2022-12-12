@@ -1,47 +1,30 @@
 const { Router } = require("express");
 const route = Router();
-const mongoose = require("mongoose");
-const connection = require("../config/db");
+const CategoryModel = require("../modules/category");
 
-connection();
-
-const galleryCategorySchema = new mongoose.Schema({
-    name: {type:String, required: true},
-    createdAt: Date,
-    updatedAt: Date
-});
-
-const imageSchema = new mongoose.Schema({
-    name: {type:String, required: true},
-    createdAt: Date,
-    updatedAt: Date,
-    category: [String],
-    likes: Number,
-    imageLink: {type:String, required: true}
-});
 
 route.get("/",(req,res)=>{
     res.send("Hello admin");
 })
 
-route.post("/category",validate,(req,res,next) =>{
-    const galleryCategory = new mongoose.model("galleryCategory", galleryCategorySchema);
-    const categoryName = req.body.category;
-    const newCategory = new galleryCategory({
-        name: categoryName,
-        createdAt: new Date(),
-        updatedAt: new Date()
-    });
-
-    galleryCategory.findOne({name: categoryName},(err,found)=>{
-        if(!found){
-            newCategory.save();
-            console.log("success");
+route.post("/add-category/:categoryName",async(req,res,next) =>{
+    try {
+        const categoryName = req.params.categoryName;
+        if(!categoryName){
+            res.status(400).send("Bad request");
         }
-    });
+
+        const newCategory = {name: categoryName};
+        await CategoryModel.create(newCategory);
+        res.send("Category added.");
+
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
 });
 
-route.post("/image",validate,(req,res,next)=>{
+route.post("/image",(req,res)=>{
     const image = new mongoose.model("image", imageSchema);
     const newImage = new image({
         name: req.body.name,
@@ -54,9 +37,5 @@ route.post("/image",validate,(req,res,next)=>{
     newImage.save();
 });
 
-function validate(req,res,next){
-    res.send("Something went wrong! Please try after some time.");
-    next();
-}
 
 module.exports = route;
