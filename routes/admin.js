@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const route = Router();
 const CategoryModel = require("../modules/category");
+const GalleryModel = require("../modules/gallery");
 
 
 route.get("/",(req,res)=>{
@@ -24,17 +25,23 @@ route.post("/add-category/:categoryName",async(req,res,next) =>{
     }
 });
 
-route.post("/image",(req,res)=>{
-    const image = new mongoose.model("image", imageSchema);
-    const newImage = new image({
-        name: req.body.name,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        category: req.body.categories,
-        likes: 0,
-        imageLink: req.body.link
-    })
-    newImage.save();
+route.post("/add-image",async(req,res,next)=>{
+    try {
+        const imageName = req.body.name;
+        const category = req.body.category;
+        const imageLink = req.body.link;
+
+        if(!imageName || !category || !imageLink){
+            res.status(400).send("Bad request");
+        }
+
+        const newImage = {name: imageName, category: category, imageUrl: imageLink};
+        await GalleryModel.create(newImage);
+        res.send("Image added.");
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
 });
 
 
