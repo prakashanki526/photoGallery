@@ -4,12 +4,17 @@ const CategoryModel = require("../modules/category");
 const GalleryModel = require("../modules/gallery");
 
 
-route.get("/:category",async(req,res,next)=>{
+route.get("/:category/:shuffle",async(req,res,next)=>{
     try {
         const category = req.params.category;
         const sortByDate = req.query.sortByDate;
         const filterByLike = req.query.filterByLike;
-        
+        const shuffle = req.params.shuffle;
+
+        // console.log("Hello");
+
+        let skip = parseInt(shuffle) || 0;
+
         let sort = 1;
         if(sortByDate == "asc"){
             sort = 1;
@@ -27,8 +32,8 @@ route.get("/:category",async(req,res,next)=>{
             res.status(400).send("Bad request");
         }
 
-        const galleryDetails = await GalleryModel.find({category: {$in: [category]},...filter}).limit(4).sort({createdAt:sort});
-        res.send(galleryDetails);
+        const galleryDetails = await GalleryModel.find({category: {$in: [category]},...filter}).skip(skip).limit(4).sort({createdAt:sort});
+        res.json(galleryDetails);
     } catch (error) {
         console.log(error);
         next(error);
