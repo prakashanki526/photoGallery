@@ -13,11 +13,19 @@ route.post("/add-category/:categoryName",async(req,res,next) =>{
         const categoryName = req.params.categoryName;
         if(!categoryName){
             res.status(400).send("Bad request");
+            return;
         }
-
-        const newCategory = {name: categoryName};
-        await CategoryModel.create(newCategory);
-        res.send("Category added.");
+        CategoryModel.find({name: categoryName},async (err,found)=>{
+            if(found.length){
+                res.send("Category already exist.");
+                return;
+            }
+            else{
+                const newCategory = {name: categoryName};
+                await CategoryModel.create(newCategory);
+                res.send("Category added.");
+            }
+        })
 
     } catch (error) {
         console.log(error);

@@ -3,14 +3,21 @@ const route = Router();
 const CategoryModel = require("../modules/category");
 const GalleryModel = require("../modules/gallery");
 
+route.get("/",(req,res) =>{
+    res.send("Hello");
+})
 
-route.get("/api/:category/:shuffle",async(req,res,next)=>{
+route.get("/api",async(req,res,next)=>{
     try {
-        console.log("hello");
-        const category = req.params.category;
+        const category = req.query.category;
         const sortByDate = req.query.sortByDate;
         const filterByLike = req.query.filterByLike;
-        const shuffle = req.params.shuffle;
+        const shuffle = req.query.shuffle;
+
+        if(!category){
+            res.status(400).send("Bad request");
+            return;
+        }
 
         let skip = parseInt(shuffle) || 0;
 
@@ -21,16 +28,11 @@ route.get("/api/:category/:shuffle",async(req,res,next)=>{
         else if(sortByDate == "dsc"){
             sort = -1;
         }
-
         let filter = {};
         if (filterByLike) {
             filter = { likes: 1 };
         }
-
-        if(!category){
-            res.status(400).send("Bad request");
-        }
-
+        
         const galleryDetails = await GalleryModel.find({category: {$in: [category]},...filter}).skip(skip).limit(4).sort({createdAt:sort});
         res.json(galleryDetails);
     } catch (error) {
@@ -42,6 +44,7 @@ route.get("/api/:category/:shuffle",async(req,res,next)=>{
 route.get("/like/:imageId", async (req, res, next) => {
     try {
         const imageId = req.params.imageId;
+
         if (!imageId) {
             res.status(400).send("Bad Request");
         }
