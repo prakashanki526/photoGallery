@@ -4,14 +4,13 @@ const CategoryModel = require("../modules/category");
 const GalleryModel = require("../modules/gallery");
 
 
-route.get("/:category/:shuffle",async(req,res,next)=>{
+route.get("/api/:category/:shuffle",async(req,res,next)=>{
     try {
+        console.log("hello");
         const category = req.params.category;
         const sortByDate = req.query.sortByDate;
         const filterByLike = req.query.filterByLike;
         const shuffle = req.params.shuffle;
-
-        // console.log("Hello");
 
         let skip = parseInt(shuffle) || 0;
 
@@ -40,11 +39,39 @@ route.get("/:category/:shuffle",async(req,res,next)=>{
     }
 });
 
-route.get("/getimages",(req,res)=>{
-    const image = new mongoose.model("image", imageSchema);
-    image.find({category:{$all:["nature"]}},(err,found) => {
-        console.log(found.slice(0,4));
-    })
-})
+route.get("/like/:imageId", async (req, res, next) => {
+    try {
+        const imageId = req.params.imageId;
+        if (!imageId) {
+            res.status(400).send("Bad Request");
+        }
+
+        let likeValue;
+
+        const imageDetails = await GalleryModel.findOne({ _id: imageId });
+
+        let toggleLike = "";
+
+        if (imageDetails) {
+            if (imageDetails.likes) {
+                likeValue = 0;
+                toggleLike = "Removed from favourites.";
+            } else {
+                likeValue = 1;
+                toggleLike = "Added to favourites";
+            }
+        }
+
+        await GalleryModel.updateOne(
+            { _id: imageId },
+            { $set: { likes: likeValue } }
+        );
+
+        res.send(toggleLike);
+    } catch (error) {
+        console.log(error);
+        next(error);
+    }
+});
 
 module.exports = route;
