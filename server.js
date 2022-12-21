@@ -2,9 +2,12 @@ const express = require("express");
 const admin = require("./routes/admin");
 const discover = require("./routes/discover");
 const connection = require("./config/db");
+const cors = require("cors");
+
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 

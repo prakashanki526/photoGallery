@@ -7,6 +7,11 @@ route.get("/",(req,res) =>{
     res.send("Hello");
 })
 
+route.get("/get-categories", async(req,res) =>{
+    const categories = await CategoryModel.find({});
+    res.send(categories);
+})
+
 route.get("/api",async(req,res,next)=>{
     try {
         const category = req.query.category;
