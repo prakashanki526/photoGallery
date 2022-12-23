@@ -7,9 +7,14 @@ route.get("/",(req,res) =>{
     res.send("Hello");
 })
 
-route.get("/get-categories", async(req,res) =>{
-    const categories = await CategoryModel.find({});
-    res.send(categories);
+route.get("/get-categories", async(req,res,next) =>{
+    try{
+        const categories = await CategoryModel.find({});
+        res.send(categories);
+    } catch(error) {
+        console.log(error);
+        next(error);
+    }
 })
 
 route.get("/api",async(req,res,next)=>{
@@ -23,9 +28,9 @@ route.get("/api",async(req,res,next)=>{
             res.status(400).send("Bad request");
             return;
         }
-
+        
         let skip = parseInt(shuffle) || 0;
-
+        
         let sort = 1;
         if(sortByDate == "asc"){
             sort = 1;
@@ -37,9 +42,9 @@ route.get("/api",async(req,res,next)=>{
         if (filterByLike) {
             filter = { likes: 1 };
         }
-        
         const galleryDetails = await GalleryModel.find({category: {$in: [category]},...filter}).skip(skip).limit(4).sort({createdAt:sort});
-        res.json(galleryDetails);
+        // res.send("Hii");
+        res.json({galleryDetails});
     } catch (error) {
         console.log(error);
         next(error);
