@@ -39,7 +39,7 @@ route.get("/api",async(req,res,next)=>{
             sort = -1;
         }
         let filter = {};
-        if (filterByLike) {
+        if (filterByLike == "true") {
             filter = { likes: 1 };
         }
         const galleryDetails = await GalleryModel.find({category: {$in: [category]},...filter}).skip(skip).limit(4).sort({createdAt:sort});
