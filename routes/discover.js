@@ -51,7 +51,7 @@ route.get("/api",async(req,res,next)=>{
     }
 });
 
-route.get("/like/:imageId", async (req, res, next) => {
+route.post("/like/:imageId", async (req, res, next) => {
     try {
         const imageId = req.params.imageId;
 
@@ -63,15 +63,11 @@ route.get("/like/:imageId", async (req, res, next) => {
 
         const imageDetails = await GalleryModel.findOne({ _id: imageId });
 
-        let toggleLike = "";
-
         if (imageDetails) {
             if (imageDetails.likes) {
                 likeValue = 0;
-                toggleLike = "Removed from favourites.";
             } else {
                 likeValue = 1;
-                toggleLike = "Added to favourites";
             }
         }
 
@@ -79,8 +75,6 @@ route.get("/like/:imageId", async (req, res, next) => {
             { _id: imageId },
             { $set: { likes: likeValue } }
         );
-
-        res.send(toggleLike);
     } catch (error) {
         console.log(error);
         next(error);
